@@ -12,6 +12,7 @@
   "author": "",
   "type": "module",
   "license": "ISC",
+  
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
@@ -21,13 +22,12 @@
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.1",
-    "socket.io": "^4.8.1",
-    "v-communicate": "file:.."
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.x"
   }
 }
