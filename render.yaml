@@ -5,12 +5,16 @@ services:
     region: oregon
     plan: free
     buildCommand: cd backend && npm install
-    startCommand: cd backend && node --experimental-specifier-resolution=node src/index.js
+    startCommand: cd backend && node --experimental-modules src/index.js
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 3000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
     autoDeploy: true
 
   - type: web
