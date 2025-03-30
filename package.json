@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "chmod +x render-build.sh && ./render-build.sh",
-    "start": "cd backend && node src/index.js"
+    "start": "cd backend && node --experimental-specifier-resolution=node --no-warnings server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "18.x"
+    "node": "16.x"
   }
 }

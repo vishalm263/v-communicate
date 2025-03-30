@@ -6,10 +6,9 @@ set -ex
 # Install dependencies in the backend
 cd backend
 rm -rf node_modules
-npm ci
-
-# Check that express is installed
-ls -la node_modules/express
+npm install express
+npm install
+npm ls express
 
 # Go back to root
 cd ..
