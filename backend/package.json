@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "build": "npm install"
+    "build": "npm install",
+    "postinstall": "npm rebuild"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,6 @@
     "nodemon": "^3.1.7"
   },
   "engines": {
-    "node": ">=18.x"
+    "node": "18.x"
   }
 }
