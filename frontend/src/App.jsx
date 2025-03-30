@@ -9,7 +9,7 @@ import ProfilePage from "./pages/ProfilePage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "./store/useAuthStore";
 import { useThemeStore } from "./store/useThemeStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
@@ -17,12 +17,36 @@ import { Toaster } from "react-hot-toast";
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
   const { theme } = useThemeStore();
+  const [effectiveTheme, setEffectiveTheme] = useState(theme === "system" ? "light" : theme);
 
-  console.log({ onlineUsers });
+  // Handle system theme preference changes
+  useEffect(() => {
+    if (theme !== "system") {
+      setEffectiveTheme(theme);
+      return;
+    }
+
+    // Handle system theme preference
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleThemeChange = (e) => {
+      setEffectiveTheme(e.matches ? "dark" : "light");
+    };
+    
+    // Set initial value
+    handleThemeChange(darkModeMediaQuery);
+    
+    // Listen for changes
+    darkModeMediaQuery.addEventListener('change', handleThemeChange);
+    
+    // Cleanup
+    return () => darkModeMediaQuery.removeEventListener('change', handleThemeChange);
+  }, [theme]);
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  console.log({ onlineUsers });
 
   console.log({ authUser });
 
@@ -34,7 +58,7 @@ const App = () => {
     );
 
   return (
-    <div data-theme={theme}>
+    <div data-theme={effectiveTheme}>
       <Navbar />
 
       <Routes>
