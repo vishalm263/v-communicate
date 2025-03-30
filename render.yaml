@@ -16,7 +16,6 @@ services:
   - type: web
     name: v-communicate-frontend
     env: static
-    region: oregon
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     envVars:
