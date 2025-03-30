@@ -1,0 +1,9 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Unix scripts should use LF line endings
+*.sh text eol=lf
+
+# JSON files should use LF to be consistent with npm
+package.json text eol=lf
+*/package.json text eol=lf 
