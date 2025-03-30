@@ -15,6 +15,11 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: v-communicate-frontend
+          property: url
     autoDeploy: true
 
   - type: web
@@ -25,6 +30,12 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 16
+      - key: VITE_BACKEND_URL
+        fromService:
+          type: web
+          name: v-communicate-backend
+          property: url
+          suffix: /api
     routes:
       - type: rewrite
         source: /*

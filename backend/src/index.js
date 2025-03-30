@@ -32,13 +32,10 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
-  });
-}
+// Add a test route
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok", message: "API is running" });
+});
 
 server.listen(PORT, () => {
   console.log("Server is running on PORT:" + PORT);
