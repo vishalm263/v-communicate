@@ -16,10 +16,7 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: FRONTEND_URL
-        fromService:
-          type: web
-          name: v-communicate-frontend
-          property: url
+        value: https://v-communicate-frontend.onrender.com
     autoDeploy: true
 
   - type: web
@@ -31,11 +28,7 @@ services:
       - key: NODE_VERSION
         value: 16
       - key: VITE_BACKEND_URL
-        fromService:
-          type: web
-          name: v-communicate-backend
-          property: url
-          suffix: /api
+        value: https://v-communicate-backend.onrender.com/api
     routes:
       - type: rewrite
         source: /*
