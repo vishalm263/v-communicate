@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <!-- Background shape -->
+  <rect width="16" height="16" rx="4" fill="#6366f1" />
+  
+  <!-- Simplified message icon -->
+  <path d="M12 5.33333C12 4.59695 11.403 4 10.6667 4H5.33333C4.59695 4 4 4.59695 4 5.33333V9.33333C4 10.0697 4.59695 10.6667 5.33333 10.6667H6V12L8 10.6667H10.6667C11.403 10.6667 12 10.0697 12 9.33333V5.33333Z" fill="white"/>
+  
+  <!-- Simplified V -->
+  <path d="M8.93333 6L7.86667 9H7L5.93333 6H6.76667L7.43333 8.06667L8.1 6H8.93333Z" fill="#6366f1" />
+</svg> 
