@@ -1,10 +1,10 @@
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
-import { MoreVertical, Trash } from "lucide-react";
+import { ChevronLeft, MoreVertical, Trash } from "lucide-react";
 import { formatLastSeen } from "../lib/utils";
 import { useState } from "react";
 
-const ChatHeader = () => {
+const ChatHeader = ({ isMobile, onBackClick }) => {
   const { selectedUser, typingUsers, deleteConversation } = useChatStore();
   const { onlineUsers } = useAuthStore();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -20,8 +20,16 @@ const ChatHeader = () => {
   };
 
   return (
-    <div className="border-b border-base-300 p-4 flex items-center justify-between">
+    <div className="border-b border-base-300 p-3 sm:p-4 flex items-center justify-between">
       <div className="flex items-center gap-3">
+        {isMobile && (
+          <button 
+            onClick={onBackClick}
+            className="mr-1 p-1.5 rounded-full hover:bg-base-200"
+          >
+            <ChevronLeft className="size-5" />
+          </button>
+        )}
         <div className="relative">
           <img
             src={selectedUser?.profilePic || "/avatar.png"}
