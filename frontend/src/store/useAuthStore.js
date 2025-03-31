@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
+import { clearUserInteractions } from "../lib/userInteractions.js";
 
 const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : import.meta.env.VITE_BACKEND_URL?.replace("/api", "") || "https://v-communicate-backend.onrender.com";
 
@@ -84,6 +85,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       await axiosInstance.post("/auth/logout");
       removeToken(); // Remove token from localStorage
+      clearUserInteractions(); // Clear user interactions from localStorage
       set({ authUser: null });
       toast.success("Logged out successfully");
       get().disconnectSocket();

@@ -6,17 +6,18 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
-import { Check, CheckCheck, Edit, MoreVertical, Reply, Smile, Trash, X } from "lucide-react";
+import { Check, CheckCheck, ChevronLeft, Edit, MoreVertical, Reply, Smile, Trash, X } from "lucide-react";
 
 // Available emoji reactions
 const EMOJI_REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
 
-const ChatContainer = () => {
+const ChatContainer = ({ isMobile }) => {
   const {
     messages,
     getMessages,
     isMessagesLoading,
     selectedUser,
+    setSelectedUser,
     subscribeToMessages,
     unsubscribeFromMessages,
     setReplyTo,
@@ -29,6 +30,11 @@ const ChatContainer = () => {
   const messageEndRef = useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(null);
   const [showActionsMenu, setShowActionsMenu] = useState(null);
+
+  // Handle back button click on mobile
+  const handleBackClick = () => {
+    setSelectedUser(null);
+  };
 
   useEffect(() => {
     getMessages(selectedUser._id);
@@ -81,7 +87,18 @@ const ChatContainer = () => {
   if (isMessagesLoading) {
     return (
       <div className="flex-1 flex flex-col overflow-hidden">
-        <ChatHeader />
+        {isMobile && (
+          <div className="bg-base-100 border-b border-base-300 p-2">
+            <button 
+              onClick={handleBackClick}
+              className="flex items-center gap-1 text-sm font-medium"
+            >
+              <ChevronLeft className="size-5" />
+              <span>Back to contacts</span>
+            </button>
+          </div>
+        )}
+        <ChatHeader isMobile={isMobile} onBackClick={handleBackClick} />
         <MessageSkeleton />
         <MessageInput />
       </div>
@@ -102,7 +119,7 @@ const ChatContainer = () => {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <ChatHeader />
+      <ChatHeader isMobile={isMobile} onBackClick={handleBackClick} />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {Object.entries(groupedMessages).map(([date, dateMessages]) => (

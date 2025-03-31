@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema(
     hideActiveStatus: {
       type: Boolean,
       default: false,
+    },
+    interactedUserIds: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
+      default: [],
     }
   },
   { timestamps: true }

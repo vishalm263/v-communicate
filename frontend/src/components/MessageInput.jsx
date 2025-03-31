@@ -139,7 +139,7 @@ const MessageInput = () => {
   };
 
   return (
-    <div className="p-4 w-full border-t border-base-200">
+    <div className="p-2 sm:p-4 w-full border-t border-base-200">
       {replyingTo && (
         <div className="mb-2 p-2 bg-base-200 rounded-lg flex items-start gap-2">
           <Reply className="size-4 text-primary shrink-0 mt-1" />
@@ -151,7 +151,11 @@ const MessageInput = () => {
               {replyingTo.text || (replyingTo.image ? "Image" : "")}
             </div>
           </div>
-          <button onClick={cancelReply} className="text-base-content/50 hover:text-base-content">
+          <button 
+            onClick={cancelReply} 
+            className="text-base-content/50 hover:text-base-content p-1 rounded-full hover:bg-base-300"
+            aria-label="Cancel reply"
+          >
             <X className="size-4" />
           </button>
         </div>
@@ -165,7 +169,11 @@ const MessageInput = () => {
               Editing message
             </div>
           </div>
-          <button onClick={cancelEditing} className="text-base-content/50 hover:text-base-content">
+          <button 
+            onClick={cancelEditing} 
+            className="text-base-content/50 hover:text-base-content p-1 rounded-full hover:bg-base-300"
+            aria-label="Cancel editing"
+          >
             <X className="size-4" />
           </button>
         </div>
@@ -181,9 +189,10 @@ const MessageInput = () => {
             />
             <button
               onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300
+              className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-base-300
               flex items-center justify-center"
               type="button"
+              aria-label="Remove image"
             >
               <X className="size-3" />
             </button>
@@ -195,7 +204,7 @@ const MessageInput = () => {
         <div className="flex-1 flex gap-2">
           <input
             type="text"
-            className="w-full input input-bordered rounded-lg"
+            className="w-full input input-bordered rounded-lg h-11"
             placeholder={messageBeingEdited ? "Edit your message..." : "Type a message..."}
             value={text}
             onChange={handleTextChange}
@@ -216,9 +225,10 @@ const MessageInput = () => {
 
               <button
                 type="button"
-                className="btn btn-circle btn-sm btn-ghost"
+                className="btn btn-circle h-11 w-11 btn-ghost"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isSendingMessage}
+                aria-label="Attach image"
               >
                 <Image className="size-5 text-base-content/60" />
               </button>
@@ -228,8 +238,9 @@ const MessageInput = () => {
         
         <button
           type="submit"
-          className="btn btn-circle btn-primary btn-sm"
+          className="btn btn-circle btn-primary h-11 w-11"
           disabled={(!text.trim() && !imagePreview) || isSendingMessage}
+          aria-label="Send message"
         >
           <Send className="size-5" />
         </button>

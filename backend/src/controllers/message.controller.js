@@ -9,36 +9,22 @@ export const getUsersForSidebar = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
     
-    // Find users that the logged-in user has interacted with
-    const messages = await Message.find({
-      $or: [
-        { senderId: loggedInUserId },
-        { receiverId: loggedInUserId }
-      ]
-    }).sort({ createdAt: -1 });
+    // Get the current user with populated interactedUserIds
+    const currentUser = await User.findById(loggedInUserId)
+      .populate({
+        path: 'interactedUserIds',
+        select: '-password -interactedUserIds'
+      });
     
-    // Extract unique user IDs from the messages
-    const userIds = new Set();
-    messages.forEach(message => {
-      if (message.senderId.toString() !== loggedInUserId.toString()) {
-        userIds.add(message.senderId.toString());
-      }
-      if (message.receiverId.toString() !== loggedInUserId.toString()) {
-        userIds.add(message.receiverId.toString());
-      }
-    });
-    
-    // Find user details for these users
-    const interactedUsers = await User.find({
-      _id: { $in: Array.from(userIds) }
-    }).select("-password");
-    
-    // If no interactions, return all users as fallback
-    if (interactedUsers.length === 0) {
-      const allUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
-      return res.status(200).json(allUsers);
+    if (!currentUser) {
+      return res.status(404).json({ error: "User not found" });
     }
     
+    // Send the interacted users
+    const interactedUsers = currentUser.interactedUserIds || [];
+    
+    // If no interactions yet, return an empty array
+    // (Frontend will handle showing the "Find people" prompt)
     res.status(200).json(interactedUsers);
   } catch (error) {
     console.error("Error in getUsersForSidebar: ", error.message);
@@ -50,6 +36,9 @@ export const getMessages = async (req, res) => {
   try {
     const { id: userToChatId } = req.params;
     const myId = req.user._id;
+
+    // Update interactedUserIds for both users if they don't already exist
+    await updateInteractedUsers(myId, userToChatId);
 
     const messages = await Message.find({
       $or: [
@@ -70,6 +59,9 @@ export const sendMessage = async (req, res) => {
     const { text, image, replyToId } = req.body;
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
+
+    // Update interactedUserIds for both users
+    await updateInteractedUsers(senderId, receiverId);
 
     let imageUrl;
     if (image) {
@@ -106,6 +98,31 @@ export const sendMessage = async (req, res) => {
     console.log("Error in sendMessage controller: ", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
+};
+
+// Helper function to update interactedUserIds for both users
+const updateInteractedUsers = async (userId1, userId2) => {
+  // Convert to ObjectId if they are strings
+  const user1Id = typeof userId1 === 'string' ? new mongoose.Types.ObjectId(userId1) : userId1;
+  const user2Id = typeof userId2 === 'string' ? new mongoose.Types.ObjectId(userId2) : userId2;
+  
+  // Update first user's interactions
+  await User.findByIdAndUpdate(
+    user1Id,
+    { 
+      $addToSet: { interactedUserIds: user2Id } 
+    },
+    { new: true }
+  );
+  
+  // Update second user's interactions
+  await User.findByIdAndUpdate(
+    user2Id,
+    { 
+      $addToSet: { interactedUserIds: user1Id } 
+    },
+    { new: true }
+  );
 };
 
 export const markMessageAsSeen = async (req, res) => {
