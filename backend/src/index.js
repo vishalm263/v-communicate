@@ -9,6 +9,7 @@ import { connectDB } from "./lib/db.js";
 
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
+import userRoutes from "./routes/user.route.js";
 import { app, server } from "./lib/socket.js";
 
 dotenv.config();
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/users", userRoutes);
 
 // Add a test route
 app.get("/api/health", (req, res) => {

@@ -5,7 +5,8 @@ import { useAuthStore } from "./useAuthStore";
 
 export const useChatStore = create((set, get) => ({
   messages: [],
-  users: [],
+  users: [], // Users with previous interactions
+  searchedUsers: [], // Users found via search
   selectedUser: null,
   replyingTo: null,
   typingUsers: {},
@@ -16,18 +17,52 @@ export const useChatStore = create((set, get) => ({
   isReactingToMessage: false,
   isDeletingMessage: false,
   isEditingMessage: false,
+  isSearchingUsers: false,
   messageBeingEdited: null,
 
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
       const res = await axiosInstance.get("/messages/users");
+      
+      // Just store the users from the backend, which are already filtered
+      // to only include users with previous interactions
       set({ users: res.data });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to load users");
     } finally {
       set({ isUsersLoading: false });
     }
+  },
+
+  searchUsers: async (query) => {
+    if (!query || query.length < 2) {
+      set({ searchedUsers: [] });
+      return;
+    }
+    
+    set({ isSearchingUsers: true });
+    try {
+      const res = await axiosInstance.get(`/users/search?query=${encodeURIComponent(query)}`);
+      const searchResults = res.data;
+      
+      // Don't include the current user in search results
+      const myId = useAuthStore.getState().authUser?._id;
+      const filteredResults = searchResults.filter(user => user._id !== myId);
+      
+      set({ searchedUsers: filteredResults });
+    } catch (error) {
+      console.error("Error searching users:", error);
+      toast.error("Failed to search users");
+      set({ searchedUsers: [] });
+    } finally {
+      set({ isSearchingUsers: false });
+    }
+  },
+
+  // Reset search
+  clearUserSearch: () => {
+    set({ searchedUsers: [] });
   },
 
   getMessages: async (userId) => {
@@ -48,6 +83,9 @@ export const useChatStore = create((set, get) => ({
       
       // Update unread counts
       get().updateUnreadCounts();
+      
+      // Make sure to update our user list since a new interaction might have been recorded
+      get().getUsers();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to load messages");
     } finally {
@@ -65,12 +103,32 @@ export const useChatStore = create((set, get) => ({
         replyingTo: null // Clear reply after sending
       });
       
+      // Since we sent a message, update the users list to ensure this user is included
+      get().getUsers();
+      
       // If we had unread messages from this user, reset the count
       get().updateUnreadCounts();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to send message");
     } finally {
       set({ isSendingMessage: false });
+    }
+  },
+
+  setSelectedUser: (user) => {
+    set({ 
+      selectedUser: user,
+      replyingTo: null,
+      messageBeingEdited: null
+    });
+    
+    if (user) {
+      // When we select a user, clear their unread count
+      set(state => {
+        const newUnreadCounts = { ...state.unreadCounts };
+        delete newUnreadCounts[user._id];
+        return { unreadCounts: newUnreadCounts };
+      });
     }
   },
 
@@ -349,23 +407,5 @@ export const useChatStore = create((set, get) => ({
     socket.off("userTyping");
     socket.off("userStoppedTyping");
     socket.off("conversationDeleted");
-  },
-
-  setSelectedUser: (selectedUser) => {
-    set({ 
-      selectedUser,
-      replyingTo: null,
-      messageBeingEdited: null,
-      typingUsers: {}
-    });
-    
-    if (selectedUser) {
-      // When we select a user, clear their unread count
-      set(state => {
-        const newUnreadCounts = { ...state.unreadCounts };
-        delete newUnreadCounts[selectedUser._id];
-        return { unreadCounts: newUnreadCounts };
-      });
-    }
   },
 }));
