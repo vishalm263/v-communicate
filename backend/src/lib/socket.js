@@ -14,7 +14,8 @@ const io = new Server(server, {
         "https://v-communicate-frontend.onrender.com",
         "http://localhost:5173",
         "http://ec2-13-53-214-41.eu-north-1.compute.amazonaws.com",
-        "https://ec2-13-53-214-41.eu-north-1.compute.amazonaws.com"
+        "https://ec2-13-53-214-41.eu-north-1.compute.amazonaws.com",
+        "https://d1g7mdx1xeyapk.cloudfront.net"  // Added this line
       ];
   
       if (!origin || allowedOrigins.includes(origin)) {
