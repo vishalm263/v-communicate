@@ -18,12 +18,36 @@ const PORT = process.env.PORT;
 const __dirname = path.resolve();
 
 // More permissive CORS handling
+
+const allowedOrigins = [
+  "http://frontend-v-comm.s3-website.eu-north-1.amazonaws.com",
+  "https://frontend-v-comm.s3-website.eu-north-1.amazonaws.com",
+  "https://v-communicate-frontend.onrender.com",
+  "http://ec2-13-53-214-41.eu-north-1.compute.amazonaws.com",
+  "https://ec2-13-53-214-41.eu-north-1.compute.amazonaws.com",
+  process.env.FRONTEND_URL
+].filter(Boolean); // this removes any undefined/null
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://frontend-v-comm.s3-website.eu-north-1.amazonaws.com",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error("❌ CORS Blocked:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL || "http://frontend-v-comm.s3-website.eu-north-1.amazonaws.com",
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+// }));
 
 app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
