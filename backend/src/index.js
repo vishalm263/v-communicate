@@ -21,25 +21,22 @@ const __dirname = path.resolve();
 
 const allowedOrigins = [
   "http://frontend-v-comm.s3-website.eu-north-1.amazonaws.com",
-  "https://frontend-v-comm.s3-website.eu-north-1.amazonaws.com",
   "https://v-communicate-frontend.onrender.com",
-  "http://ec2-13-53-214-41.eu-north-1.compute.amazonaws.com",
-  "https://ec2-13-53-214-41.eu-north-1.compute.amazonaws.com",
-  process.env.FRONTEND_URL
-].filter(Boolean); // this removes any undefined/null
+  "http://localhost:5173"
+];
 
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.error("❌ CORS Blocked:", origin);
+      console.log("Blocked by CORS middleware:", origin);
       callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 // app.use(cors({
