@@ -22,7 +22,10 @@ const __dirname = path.resolve();
 const allowedOrigins = [
   "http://frontend-v-comm.s3-website.eu-north-1.amazonaws.com",
   "https://v-communicate-frontend.onrender.com",
-  "http://localhost:5173"
+  "http://localhost:5173",
+  "http://ec2-13-53-214-41.eu-north-1.compute.amazonaws.com",
+  "https://ec2-13-53-214-41.eu-north-1.compute.amazonaws.com",
+  "https://d1g7mdx1xeyapk.cloudfront.net"  // Added this line
 ];
 
 app.use(cors({
