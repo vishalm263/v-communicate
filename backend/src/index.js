@@ -19,7 +19,7 @@ const __dirname = path.resolve();
 
 // More permissive CORS handling
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: process.env.FRONTEND_URL || "http://frontend-v-comm.s3-website.eu-north-1.amazonaws.com",
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
